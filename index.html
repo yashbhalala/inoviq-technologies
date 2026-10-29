@@ -320,7 +320,7 @@ const j=await r.json().catch(()=>({}));
 if(r.ok&&(j.success===true||j.success==='true')){f.reset();m.className='ok';m.textContent='Thanks! Your message has been sent. We will reply within 24 hours.'}
 else{console.warn('Contact form error',r.status,j);const e=new Error(j.message||('HTTP '+r.status));e.why=String(j.message||'');throw e}}
 catch(err){if(!err.why)console.warn('Contact form error',err);const act=/activat/i.test(err.why||'')?' <br><small>Site owner: this form needs one-time activation. Open the activation email sent to '+MAIL+' and click Activate, then try again.</small>':'';const body='Name: '+d.name+'\nEmail: '+d.email+'\nProject: '+d.project_type+'\n\n'+d.message,mt='mailto:'+MAIL+'?subject='+encodeURIComponent(d._subject)+'&body='+encodeURIComponent(body);
-m.className='er';m.innerHTML='Sorry, we could not send it from here. <a href="'+mt+'">Click to send it from your email app</a> (your message is filled in), or <a href="https://wa.me/919081754700" target="_blank" rel="noopener">WhatsApp us</a>.'+act}
+m.className='er';m.innerHTML='Sorry, we could not send it from here. <a href="'+mt+'">Click to send it from your email app</a> (your message is filled in), or <a href="https://wa.me/919081754700" target="_blank" rel="noopener">WhatsApp us</a>.'+act+(location.search.indexOf('debug')>-1?'<br><small>Debug: '+String((err&&err.message)||err).replace(/[<>&]/g,'')+'</small>':'')}
 finally{clearTimeout(to);b.disabled=false;b.textContent=t}})})();
 </script>
 </body></html>
