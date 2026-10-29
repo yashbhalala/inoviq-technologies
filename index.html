@@ -304,7 +304,8 @@ try{const r=await fetch('https://formsubmit.co/ajax/'+MAIL,{method:'POST',header
 const j=await r.json().catch(()=>({}));
 if(r.ok&&(j.success===true||j.success==='true')){f.reset();m.className='ok';m.textContent='Thanks! Your message has been sent. We will reply within 24 hours.'}
 else throw new Error(j.message||'failed')}
-catch(err){m.className='er';m.innerHTML='Sorry, the message could not be sent. Please email us at <a href="mailto:'+MAIL+'">'+MAIL+'</a> or <a href="https://wa.me/919081754700" target="_blank" rel="noopener">WhatsApp us</a>.'}
+catch(err){const body='Name: '+d.name+'\nEmail: '+d.email+'\nProject: '+d.project_type+'\n\n'+d.message,mt='mailto:'+MAIL+'?subject='+encodeURIComponent(d._subject)+'&body='+encodeURIComponent(body);
+m.className='er';m.innerHTML='Sorry, we could not send it from here. <a href="'+mt+'">Click to send it from your email app</a> (your message is filled in), or <a href="https://wa.me/919081754700" target="_blank" rel="noopener">WhatsApp us</a>.'}
 finally{clearTimeout(to);b.disabled=false;b.textContent=t}})})();
 </script>
 </body></html>
