@@ -77,6 +77,8 @@ section{padding:14vh 0}.eb{font-size:.78rem;letter-spacing:.22em;text-transform:
 form{display:grid;gap:12px;align-content:start}input,select,textarea{width:100%;padding:18px 20px;border-radius:16px;border:1px solid var(--ln);background:var(--cd);color:var(--tx);font:inherit}
 select{appearance:none;-webkit-appearance:none;cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='8'%3E%3Cpath d='M1 1l6 6 6-6' fill='none' stroke='%238791aa' stroke-width='1.6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 20px center;padding-right:48px}option{background:#0c101b;color:#eef2fb}
 input:focus,select:focus,textarea:focus{outline:0;border-color:var(--ac);box-shadow:0 0 0 3px rgba(59,130,246,.22)}.hp{display:none}
+.btn[disabled]{opacity:.65;cursor:wait;box-shadow:none}
+#fm{font-size:.95rem;line-height:1.5;min-height:0}#fm.ok{color:#4ade80}#fm.er{color:#f87171}#fm a{text-decoration:underline}
 footer{padding:80px 0 28px;border-top:1px solid var(--ln);background:#05070d}.fg{display:grid;grid-template-columns:1.6fr 1fr 1fr 1fr;gap:40px;padding-bottom:56px}.fg p{color:var(--mu);font-size:.92rem;margin-top:18px;max-width:330px}.fg h4{font:600 .78rem "Space Grotesk";letter-spacing:.16em;text-transform:uppercase;margin-bottom:14px}.fg .l{display:block;color:var(--mu);font-size:.92rem;padding:5px 0;transition:color .25s,transform .25s}.fg .l:hover{color:var(--tx);transform:translateX(4px)}
 .fl{border-top:1px solid var(--ln);padding-top:24px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:16px;color:var(--mu);font-size:.88rem}.fl div{display:flex;gap:24px;flex-wrap:wrap}.fl a:hover{color:var(--tx)}
 
@@ -216,10 +218,10 @@ footer{padding:60px 0 24px}.fg{grid-template-columns:1fr 1fr;gap:32px;padding-bo
 
 <section id="contact"><div class="w"><div class="ct"><div><div class="eb">Contact</div><h2 class="d" style="font-size:clamp(2.4rem,5vw,4.6rem);max-width:none">Let’s build it.</h2>
 <div class="inf"><a href="https://wa.me/919081754700" target="_blank" rel="noopener">WhatsApp <span>Chat with us ↗</span></a><a href="https://www.linkedin.com/company/inoviq-technologies/" target="_blank" rel="noopener">LinkedIn <span>Inoviq Technologies ↗</span></a><a href="https://www.instagram.com/inoviq.technologies/" target="_blank" rel="noopener">Instagram <span>@inoviq.technologies ↗</span></a></div></div>
-<form name="contact" method="POST" action="/thanks.html" data-netlify="true" netlify-honeypot="bot-field"><input type="hidden" name="form-name" value="contact"><input type="hidden" name="subject" value="New enquiry from inoviqtechnologies.com"><p class="hp"><input name="bot-field" tabindex="-1"></p>
+<form id="cf" name="contact" method="POST" action="https://formsubmit.co/careers@inoviqtechnologies.com"><input type="hidden" name="_subject" value="New enquiry from inoviqtechnologies.com"><input type="hidden" name="_template" value="table"><input type="hidden" name="_captcha" value="false"><input type="hidden" name="_next" value="https://inoviqtechnologies.com/#contact"><p class="hp"><input name="_honey" tabindex="-1" autocomplete="off"></p>
 <input name="name" placeholder="Your name" required><input type="email" name="email" placeholder="Email" required>
 <select name="type"><option>Android app</option><option>iOS app</option><option>Website</option><option>Android + iOS</option><option>Something else</option></select>
-<textarea name="message" rows="5" placeholder="What are you trying to build?" required></textarea><button class="btn mag" type="submit" style="justify-self:start">Send message →</button></form></div></div></section>
+<textarea name="message" rows="5" placeholder="What are you trying to build?" required></textarea><button class="btn mag" id="cb" type="submit" style="justify-self:start">Send message →</button><p id="fm" role="status" aria-live="polite"></p></form></div></div></section>
 </main>
 
 <footer><div class="w"><div class="fg">
@@ -289,5 +291,20 @@ $$('.row[data-svc]').forEach(r=>{r.addEventListener('click',()=>openS(r.dataset.
 sm.addEventListener('click',e=>{if(e.target===sm){closeS();return}const b=e.target.closest('[data-a]');if(!b)return;const a=b.dataset.a;if(a==='quote')quote();else if(a==='prev')step(-1);else if(a==='next')step(1)});
 $('#sm .x').addEventListener('click',closeS);
 addEventListener('keydown',e=>{if(!sm.classList.contains('on'))return;if(e.key==='Escape')closeS();else if(e.key==='ArrowRight')step(1);else if(e.key==='ArrowLeft')step(-1)});
+
+/* ---- Contact form (no server needed) ---- */
+(function(){const f=$('#cf'),b=$('#cb'),m=$('#fm');if(!f)return;
+const MAIL='careers@inoviqtechnologies.com';
+f.addEventListener('submit',async e=>{e.preventDefault();
+if(f.elements['_honey'].value){m.className='ok';m.textContent='Thanks! Your message has been sent.';return}
+const d={name:f.elements.name.value.trim(),email:f.elements.email.value.trim(),project_type:f.elements.type.value,message:f.elements.message.value.trim(),_subject:'New enquiry from inoviqtechnologies.com',_template:'table',_captcha:'false',_replyto:f.elements.email.value.trim()};
+const t=b.textContent;b.disabled=true;b.textContent='Sending…';m.className='';m.textContent='';
+const ac=new AbortController(),to=setTimeout(()=>ac.abort(),20000);
+try{const r=await fetch('https://formsubmit.co/ajax/'+MAIL,{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify(d),signal:ac.signal});
+const j=await r.json().catch(()=>({}));
+if(r.ok&&(j.success===true||j.success==='true')){f.reset();m.className='ok';m.textContent='Thanks! Your message has been sent. We will reply within 24 hours.'}
+else throw new Error(j.message||'failed')}
+catch(err){m.className='er';m.innerHTML='Sorry, the message could not be sent. Please email us at <a href="mailto:'+MAIL+'">'+MAIL+'</a> or <a href="https://wa.me/919081754700" target="_blank" rel="noopener">WhatsApp us</a>.'}
+finally{clearTimeout(to);b.disabled=false;b.textContent=t}})})();
 </script>
 </body></html>
